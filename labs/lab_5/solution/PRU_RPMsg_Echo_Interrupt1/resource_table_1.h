@@ -86,9 +86,15 @@ struct my_resource_table {
 	struct fw_rsc_custom pru_ints;
 };
 
-#pragma DATA_SECTION(resourceTable, ".resource_table")
-#pragma RETAIN(resourceTable)
-struct my_resource_table resourceTable = {
+#if !defined(__GNUC__)
+  #pragma DATA_SECTION(resourceTable, ".resource_table")
+  #pragma RETAIN(resourceTable)
+  #define __resource_table      /* */
+#else
+  #define __resource_table __attribute__((section(".resource_table")))
+#endif
+
+struct my_resource_table resourceTable __resource_table = {
         {
                 1,              /* Resource table version: only version 1 is supported by the current driver */
                 2,              /* number of entries in the table */

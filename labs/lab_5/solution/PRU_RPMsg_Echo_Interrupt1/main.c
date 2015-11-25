@@ -41,7 +41,13 @@
 #include <sys_mailbox.h>
 #include "resource_table_1.h"
 
+#ifdef __GNUC__
+#include <pru/io.h>
+#endif
+
+#ifndef __GNUC__
 volatile register uint32_t __R31;
+#endif
 
 /* PRU1 is mailbox module user 2 */
 #define MB_USER						2
@@ -108,7 +114,12 @@ void main() {
 	while(pru_rpmsg_channel(RPMSG_NS_CREATE, &transport, CHAN_NAME, CHAN_DESC, CHAN_PORT) != PRU_RPMSG_SUCCESS);
 	while(1){
 		/* Check bit 31 of register R31 to see if the mailbox interrupt has occurred */
-		if(__R31 & HOST_INT){
+#ifdef __GNUC__
+		unsigned int r31 = read_r31();
+#else
+		unsigned int r31 = __R31;
+#endif
+		if(r31 & HOST_INT){
 			/* Clear the mailbox interrupt */
 			CT_MBX.IRQ[MB_USER].STATUS_CLR |= 1 << (MB_FROM_ARM_HOST * 2);
 			/* Clear the event status, event MB_INT_NUMBER corresponds to the mailbox interrupt */
