@@ -88,7 +88,7 @@ uint8_t payload[RPMSG_BUF_SIZE];
 /*
  * main.c
  */
-void main() {
+int main() {
 	struct pru_rpmsg_transport transport;
 	uint16_t src, dst, len;
 	volatile uint8_t *status;
@@ -137,4 +137,6 @@ void main() {
 			}
 		}
 	}
+
+	return 0;
 }
