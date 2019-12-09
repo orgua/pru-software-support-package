@@ -45,8 +45,9 @@ void main(void)
 	/* Clear SYSCFG[STANDBY_INIT] to enable OCP master port */
 	CT_CFG.SYSCFG_bit.STANDBY_INIT = 0;
 
-	/* Toggle GPO pins TODO: Figure out which to use */
-	gpio = 0x000F;
+	/* Toggle GPO pins */
+	/* Note: 0xFFFF_FFFF toggles all GPO pins */
+	gpio = 0xFFFFFFFF;
 
 	/* TODO: Create stop condition, else it will toggle indefinitely */
 	while (1) {
