@@ -29,8 +29,8 @@ MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 PROJ_NAME=$(CURRENT_DIR)
 LINKER_COMMAND_FILE=./AM437x_PRU_SS1.cmd
-LIBS=--library=../../../../../lib/rpmsg_lib.lib
-INCLUDE=--include_path=../../../../../include --include_path=../../../../../include/am437x
+LIBS=--library=../../../../../../lib/rpmsg_lib.lib
+INCLUDE=--include_path=../../../../../../include --include_path=../../../../../../include/am437x
 STACK_SIZE=0x100
 HEAP_SIZE=0x100
 GEN_DIR=gen

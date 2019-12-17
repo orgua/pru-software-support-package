@@ -29,8 +29,8 @@ MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 PROJ_NAME=$(CURRENT_DIR)
 LINKER_COMMAND_FILE=./K2G_PRU.cmd
-LIBS=--library=../../../../../lib/rpmsg_lib.lib
-INCLUDE=--include_path=../../../../../include --include_path=../../../../../include/k2g
+LIBS=--library=../../../../../../lib/rpmsg_lib.lib
+INCLUDE=--include_path=../../../../../../include --include_path=../../../../../../include/k2g
 STACK_SIZE=0x100
 HEAP_SIZE=0x100
 GEN_DIR=gen
