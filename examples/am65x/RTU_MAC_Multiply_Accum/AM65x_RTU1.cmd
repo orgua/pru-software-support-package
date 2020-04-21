@@ -4,7 +4,7 @@
  * Example Linker command file for linking programs built with the C compiler
  * on AM65x RTU1 cores
  *
- * Copyright (C) 2017-2018 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2017-2020 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,25 +41,25 @@
 MEMORY
 {
       PAGE 0:
-	/* 8kB RTU Instruction RAM */
+	/* 8 KB RTU Instruction RAM */
 	RTU_IMEM	: org = 0x00000000 len = 0x00002000
 
       PAGE 1:
 	/* Data RAMs */
-	/* 8kB PRU Data RAM 0_1; use only the first page for PRU1 and reserve
-	 * the second page for RTU1 */
-	PRU_DMEM_0_1	: org = 0x00000000 len = 0x00001000	CREGISTER=24
-	/* 8kB PRU Data RAM 1_0; use only the first page for PRU0 and reserve
-	 * the second page for RTU0 */
-	PRU_DMEM_1_0	: org = 0x00002000 len = 0x00001000	CREGISTER=25
+	/* 8 KB PRU Data RAM 1; use only the first 4 KB for PRU1 and reserve
+	 * the second 4 KB for RTU1 */
+	PRU1_DMEM_1	: org = 0x00000000 len = 0x00001000	CREGISTER=24
+	/* 8 KB PRU Data RAM 0; use only the first 4 KB for PRU0 and reserve
+	 * the second 4 KB for RTU0 */
+	PRU1_DMEM_0	: org = 0x00002000 len = 0x00001000	CREGISTER=25
 	/* NOTE: Customized to use the second 4K of ICSS Data RAMs 0 and 1 so
 	   as not to conflict with corresponding PRU core usage */
-	RTU_DMEM_0_1	: org = 0x00001000 len = 0x00001000
-	RTU_DMEM_1_0	: org = 0x00003000 len = 0x00001000
+	RTU1_DMEM_1	: org = 0x00001000 len = 0x00001000
+	RTU1_DMEM_0	: org = 0x00003000 len = 0x00001000
 
       PAGE 2:
 	/* C28 needs to be programmed to point to SHAREDMEM, default is 0 */
-	/* 64kB PRU Shared RAM */
+	/* 64 KB PRU Shared RAM */
 	PRU_SHAREDMEM	: org = 0x00010000 len = 0x00010000	CREGISTER=28
 
 	/* Internal Peripherals */
@@ -76,7 +76,7 @@ MEMORY
 	 * out as it conflicts with PRU_INTC size above. Using this requires
 	 * splitting up the pruIntc structure and CT_INTC variable from
 	 * pru_intc.h */
-	/*PRU_INTC_0x200: org = 0x00040200 len = 0x00001304	CREGISTER=6*/
+	/*PRU_INTC_0x200: org = 0x00020200 len = 0x00001304	CREGISTER=6*/
 	PRU_UART	: org = 0x00028000 len = 0x00000038	CREGISTER=7
 	PRU_IEP0_0x100	: org = 0x0002E100 len = 0x0000021C	CREGISTER=8
 	MII_G_RT	: org = 0x00033000 len = 0x00000C18	CREGISTER=9
@@ -113,17 +113,17 @@ SECTIONS {
 	.text:_c_int00*	>  0x0, PAGE 0
 
 	.text		>  RTU_IMEM, PAGE 0
-	.stack		>  RTU_DMEM_0_1, PAGE 1
-	.bss		>  RTU_DMEM_0_1, PAGE 1
-	.cio		>  RTU_DMEM_0_1, PAGE 1
-	.data		>  RTU_DMEM_0_1, PAGE 1
-	.switch		>  RTU_DMEM_0_1, PAGE 1
-	.sysmem		>  RTU_DMEM_0_1, PAGE 1
-	.cinit		>  RTU_DMEM_0_1, PAGE 1
-	.rodata		>  RTU_DMEM_0_1, PAGE 1
-	.rofardata	>  RTU_DMEM_0_1, PAGE 1
-	.farbss		>  RTU_DMEM_0_1, PAGE 1
-	.fardata	>  RTU_DMEM_0_1, PAGE 1
+	.stack		>  RTU1_DMEM_1, PAGE 1
+	.bss		>  RTU1_DMEM_1, PAGE 1
+	.cio		>  RTU1_DMEM_1, PAGE 1
+	.data		>  RTU1_DMEM_1, PAGE 1
+	.switch		>  RTU1_DMEM_1, PAGE 1
+	.sysmem		>  RTU1_DMEM_1, PAGE 1
+	.cinit		>  RTU1_DMEM_1, PAGE 1
+	.rodata		>  RTU1_DMEM_1, PAGE 1
+	.rofardata	>  RTU1_DMEM_1, PAGE 1
+	.farbss		>  RTU1_DMEM_1, PAGE 1
+	.fardata	>  RTU1_DMEM_1, PAGE 1
 
-	.resource_table >  RTU_DMEM_0_1, PAGE 1
+	.resource_table >  RTU1_DMEM_1, PAGE 1
 }
