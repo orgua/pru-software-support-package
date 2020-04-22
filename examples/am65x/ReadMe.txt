@@ -16,6 +16,7 @@ HELP! THE ICSSG EXAMPLES ARE STRUCTURED DIFFERENTLY THAN THE ICSS EXAMPLES!
 	Project naming convention:
 	PRU_xxx is for PRU cores
 	RTU_xxx is for RTU cores (note the different command linker file)
+	TX_PRU_xxx is for Tx_PRU cores (only available on AM65x SR2.0 SoCs)
 
 	We build firmware for multiple ICSSG instances in the Makefile
 	(e.g., PRU_RPMsg_Echo_Interrupt0/Makefile builds firmware for PRU0 in
@@ -30,6 +31,7 @@ WHAT EXAMPLES ARE INCLUDED?
 	---------
 	PRU_Halt
 	RTU_Halt
+	TX_PRU_Halt
 		This is the basic example. The core gets initialized, and then
 		does nothing.
 
@@ -46,6 +48,26 @@ WHAT EXAMPLES ARE INCLUDED?
 		useful for initial debugging and demonstrations.
 
 
+AM65x SR1.0 vs SR2.0 USAGE
+
+	The AM65x SoCs uses different revisions of the ICSSG IP between AM65x
+	SR1.0 and SR2.0 SoCs. The revised ICSSG IP on AM65x SR2.0 SoCs have
+	two additional auxiliary PRU cores called Tx_PRUs, one per slice, in
+	each ICSSG instance. These new cores share the same Data RAMs present
+	within the IP, but use their own dedicated Instruction RAMs to execute
+	code. For further details and differences, please refer to the
+	"Programmable Real-Time Unit and Industrial Communication Subsystem"
+	chapters in the "AM65x/DRA80xM Processors Technical Reference Manual"
+	available under the Technical Documents on the corresponding
+	AM65xx part on www.ti.com.
+
+	The linker command files in the current examples demonstrate an example
+	partitioning of the Data RAMs to be used with all the PRU, RTU and
+	Tx_PRU cores for SR2.0 SoCs. These examples can be run on SR1.0 SoCs as
+	well, with the memory dedicated for Tx_PRUs unused. This need not be the
+	case if the applications are intended only for AM65x SR1.0 SoCs.
+
+
 ADDITIONAL RESOURCES
 
 	For more information about the PRU, visit:
@@ -55,5 +77,6 @@ ADDITIONAL RESOURCES
 	Linux SDK Support	 - http://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/index.html
 	PRU Training Slides      - http://www.ti.com/sitarabootcamp
 	PRU Evaluation Hardware  - http://www.ti.com/tool/PRUCAPE
+	AM65x TRM                - https://www.ti.com/lit/pdf/spruid7
 	Support                  - http://e2e.ti.com
 
