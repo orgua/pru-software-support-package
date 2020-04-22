@@ -25,7 +25,7 @@ endef
 $(error $(ERROR_BODY))
 endif
 
-SUBSYS ?= 0
+SLICE ?= 0
 MKFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR := $(notdir $(patsubst %/,%,$(dir $(MKFILE_PATH))))
 PROJ_NAME=$(CURRENT_DIR)
@@ -34,15 +34,15 @@ LIBS=--library=../../../lib/rpmsg_lib.lib
 INCLUDE=--include_path=../../../include --include_path=../../../include/am65x
 STACK_SIZE=0x100
 HEAP_SIZE=0x100
-GEN_DIR=gen/RTU$(SUBSYS)
+GEN_DIR=gen/RTU$(SLICE)
 
 #Common compiler and linker flags (Defined in 'PRU Optimizing C/C++ Compiler User's Guide)
 CFLAGS=-v3 -O2 --display_error_number --endian=little --hardware_mac=on --obj_directory=$(GEN_DIR) --pp_directory=$(GEN_DIR) -ppd -ppa
 #Linker flags (Defined in 'PRU Optimizing C/C++ Compiler User's Guide)
 LFLAGS=--reread_libs --warn_sections --stack_size=$(STACK_SIZE) --heap_size=$(HEAP_SIZE)
 
-TARGET=$(GEN_DIR)/$(PROJ_NAME)_$(SUBSYS).out
-MAP=$(GEN_DIR)/$(PROJ_NAME)_$(SUBSYS).map
+TARGET=$(GEN_DIR)/$(PROJ_NAME)_$(SLICE).out
+MAP=$(GEN_DIR)/$(PROJ_NAME)_$(SLICE).map
 SOURCES=$(wildcard *.c)
 #Using .object instead of .obj in order to not conflict with the CCS build process
 OBJECTS=$(patsubst %,$(GEN_DIR)/%,$(SOURCES:.c=.object))
@@ -50,9 +50,9 @@ OBJECTS=$(patsubst %,$(GEN_DIR)/%,$(SOURCES:.c=.object))
 all: .printStart .build_all .printEnd
 
 .build_all:
-	@make --no-print-directory .build_one SUBSYS=0 LINKER_COMMAND_FILE=./AM65x_RTU0.cmd
+	@make --no-print-directory .build_one SLICE=0 LINKER_COMMAND_FILE=./AM65x_RTU0.cmd
 	@echo ''
-	@make --no-print-directory .build_one SUBSYS=1 LINKER_COMMAND_FILE=./AM65x_RTU1.cmd
+	@make --no-print-directory .build_one SLICE=1 LINKER_COMMAND_FILE=./AM65x_RTU1.cmd
 	@echo ''
 
 .printStart:
@@ -82,7 +82,7 @@ $(TARGET): $(OBJECTS)
 # Invokes the compiler on all c files in the directory to create the object files
 $(GEN_DIR)/%.object: %.c
 	@mkdir -p $(GEN_DIR)
-	@echo '###### Building for RTU$(SUBSYS) ######'
+	@echo '###### Building for RTU$(SLICE) ######'
 	@echo 'Building file: $<'
 	@echo 'Invoking: PRU Compiler'
 	$(PRU_CGT)/bin/clpru --include_path=$(PRU_CGT)/include $(INCLUDE) $(CFLAGS) $(DCFLAGS) -fe $@ $<
@@ -95,9 +95,9 @@ clean:
 	@echo '************************************************************'
 	@echo 'Cleaning project: $(PROJ_NAME)'
 	@echo ''
-	@make --no-print-directory .clean_one SUBSYS=0
+	@make --no-print-directory .clean_one SLICE=0
 	@echo ''
-	@make --no-print-directory .clean_one SUBSYS=1
+	@make --no-print-directory .clean_one SLICE=1
 	@echo ''
 	@echo 'Removing the generated "gen" directory'
 	@rm -rf gen
