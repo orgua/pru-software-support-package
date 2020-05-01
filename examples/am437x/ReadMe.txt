@@ -49,5 +49,6 @@ ADDITIONAL RESOURCES
 	PRU-ICSS Wiki            - http://processors.wiki.ti.com/index.php/PRU-ICSS
 	PRU Training Slides      - http://www.ti.com/sitarabootcamp
 	PRU Evaluation Hardware  - http://www.ti.com/tool/PRUCAPE
+	AM437x TRM               - https://www.ti.com/lit/pdf/spruhl7
 	Support                  - http://e2e.ti.com
 

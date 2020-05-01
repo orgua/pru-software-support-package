@@ -45,5 +45,6 @@ ADDITIONAL RESOURCES
 	Linux SDK Support	 - http://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/index.html
 	PRU Training Slides      - http://www.ti.com/sitarabootcamp
 	PRU Evaluation Hardware  - http://www.ti.com/tool/PRUCAPE
+	AM335x TRM               - https://www.ti.com/lit/pdf/spruh73
 	Support                  - http://e2e.ti.com
 
