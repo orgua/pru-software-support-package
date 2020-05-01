@@ -4,7 +4,7 @@
  * Example Linker command file for linking programs built with the C compiler
  * on AM65x PRU1 cores
  *
- * Copyright (C) 2017-2018 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2017-2020 Texas Instruments Incorporated - http://www.ti.com/
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,25 +41,28 @@
 MEMORY
 {
       PAGE 0:
-	/* 16kB PRU Instruction RAM */
+	/* 16 KB PRU Instruction RAM */
 	PRU_IMEM	: org = 0x00000000 len = 0x00004000
 
       PAGE 1:
 	/* Data RAMs */
-	/* 8kB PRU Data RAM 0_1; use only the first page for PRU1 and reserve
-	 * the second page for RTU1 */
-	PRU_DMEM_0_1	: org = 0x00000000 len = 0x00001000	CREGISTER=24
-	/* 8kB PRU Data RAM 1_0; use only the first page for PRU0 and reserve
-	 * the second page for RTU0 */
-	PRU_DMEM_1_0	: org = 0x00002000 len = 0x00001000	CREGISTER=25
-	/* NOTE: Customized to reserve the second 4K of ICSS Data RAMs 0 and 1 so
-	   as not to conflict with corresponding RTU core usage */
-	RTU_DMEM_0_1	: org = 0x00001000 len = 0x00001000
-	RTU_DMEM_1_0	: org = 0x00003000 len = 0x00001000
+	/* 8 KB PRU Data RAM 1; use only the first 4 KB for PRU1 and reserve
+	 * the second 4 KB for RTU1 and Tx_PRU1 */
+	PRU1_DMEM_1	: org = 0x00000000 len = 0x00001000	CREGISTER=24
+	/* 8 KB PRU Data RAM 0; reserved completely for Slice0 cores - PRU0,
+	 * RTU0 and Tx_PRU0; do not use for any Slice1 cores */
+	PRU1_DMEM_0	: org = 0x00002000 len = 0x00001000	CREGISTER=25
+	/* NOTE: Custom split of the second 4 KB of ICSS Data RAMs 0 and 1
+	 * split equally between the corresponding RTU and Tx_PRU cores in
+	 * each slice */
+	RTU1_DMEM_1	: org = 0x00001000 len = 0x00000800
+	TX_PRU1_DMEM_1	: org = 0x00001800 len = 0x00000800
+	RTU1_DMEM_0	: org = 0x00003000 len = 0x00000800
+	TX_PRU1_DMEM_0	: org = 0x00003800 len = 0x00000800
 
       PAGE 2:
 	/* C28 needs to be programmed to point to SHAREDMEM, default is 0 */
-	/* 64kB PRU Shared RAM */
+	/* 64 KB PRU Shared RAM */
 	PRU_SHAREDMEM	: org = 0x00010000 len = 0x00010000	CREGISTER=28
 
 	/* Internal Peripherals */
@@ -76,7 +79,7 @@ MEMORY
 	 * out as it conflicts with PRU_INTC size above. Using this requires
 	 * splitting up the pruIntc structure and CT_INTC variable from
 	 * pru_intc.h */
-	/*PRU_INTC_0x200: org = 0x00040200 len = 0x00001304	CREGISTER=6*/
+	/*PRU_INTC_0x200: org = 0x00020200 len = 0x00001304	CREGISTER=6*/
 	PRU_UART	: org = 0x00028000 len = 0x00000038	CREGISTER=7
 	PRU_IEP0_0x100	: org = 0x0002E100 len = 0x0000021C	CREGISTER=8
 	MII_G_RT	: org = 0x00033000 len = 0x00000C18	CREGISTER=9
@@ -89,7 +92,7 @@ MEMORY
 	MII_MDIO	: org = 0x00032400 len = 0x00000090	CREGISTER=21
 	PRU_RTU_RAT1	: org = 0x00009000 len = 0x00000854	CREGISTER=22
 	PRU_IEP0	: org = 0x0002E000 len = 0x00000100	CREGISTER=26
-	MII_R		: org = 0x00032000 len = 0x0000024C	CREGISTER=27
+	MII_RT		: org = 0x00032000 len = 0x0000024C	CREGISTER=27
 
 	/* External Regions */
 	/* Random length 0x1000 assigned to the below regions */
@@ -113,17 +116,17 @@ SECTIONS {
 	.text:_c_int00*	>  0x0, PAGE 0
 
 	.text		>  PRU_IMEM, PAGE 0
-	.stack		>  PRU_DMEM_0_1, PAGE 1
-	.bss		>  PRU_DMEM_0_1, PAGE 1
-	.cio		>  PRU_DMEM_0_1, PAGE 1
-	.data		>  PRU_DMEM_0_1, PAGE 1
-	.switch		>  PRU_DMEM_0_1, PAGE 1
-	.sysmem		>  PRU_DMEM_0_1, PAGE 1
-	.cinit		>  PRU_DMEM_0_1, PAGE 1
-	.rodata		>  PRU_DMEM_0_1, PAGE 1
-	.rofardata	>  PRU_DMEM_0_1, PAGE 1
-	.farbss		>  PRU_DMEM_0_1, PAGE 1
-	.fardata	>  PRU_DMEM_0_1, PAGE 1
+	.stack		>  PRU1_DMEM_1, PAGE 1
+	.bss		>  PRU1_DMEM_1, PAGE 1
+	.cio		>  PRU1_DMEM_1, PAGE 1
+	.data		>  PRU1_DMEM_1, PAGE 1
+	.switch		>  PRU1_DMEM_1, PAGE 1
+	.sysmem		>  PRU1_DMEM_1, PAGE 1
+	.cinit		>  PRU1_DMEM_1, PAGE 1
+	.rodata		>  PRU1_DMEM_1, PAGE 1
+	.rofardata	>  PRU1_DMEM_1, PAGE 1
+	.farbss		>  PRU1_DMEM_1, PAGE 1
+	.fardata	>  PRU1_DMEM_1, PAGE 1
 
-	.resource_table >  PRU_DMEM_0_1, PAGE 1
+	.resource_table >  PRU1_DMEM_1, PAGE 1
 }
