@@ -1,3 +1,5 @@
+#ifndef _UAPI_LINUX_VIRTIO_RING_H
+#define _UAPI_LINUX_VIRTIO_RING_H
 /* An interface for efficient virtio implementation, currently for use by KVM
  * and lguest, but hopefully others soon.  Do NOT change this since it will
  * break existing servers and clients.
@@ -107,28 +109,28 @@ struct vring {
  *	struct vring_desc desc[num];
  *
  *	// A ring of available descriptor heads with free-running index.
- *	__u16 avail_flags;
- *	__u16 avail_idx;
- *	__u16 available[num];
- *	__u16 used_event_idx;
+ *	uint16_t avail_flags;
+ *	uint16_t avail_idx;
+ *	uint16_t available[num];
+ *	uint16_t used_event_idx;
  *
  *	// Padding to the next align boundary.
  *	char pad[];
  *
  *	// A ring of used descriptor heads with free-running index.
- *	__u16 used_flags;
- *	__u16 used_idx;
+ *	uint16_t used_flags;
+ *	uint16_t used_idx;
  *	struct vring_used_elem used[num];
- *	__u16 avail_event_idx;
+ *	uint16_t avail_event_idx;
  * };
  */
 /* We publish the used event index at the end of the available ring, and vice
  * versa. They are at the end for backwards compatibility. */
 #define vring_used_event(vr) ((vr)->avail->ring[(vr)->num])
-#define vring_avail_event(vr) (*(__u16 *)&(vr)->used->ring[(vr)->num])
+#define vring_avail_event(vr) (*(uint16_t *)&(vr)->used->ring[(vr)->num])
 
 static inline void vring_init(struct vring *vr, uint32_t num, void *p,
-			      uint64_t align)
+                              uint64_t align)
 {
 	vr->num = num;
 	vr->desc = p;
@@ -140,8 +142,8 @@ static inline void vring_init(struct vring *vr, uint32_t num, void *p,
 static inline unsigned vring_size(uint16_t num, uint64_t align)
 {
 	return ((sizeof(struct vring_desc) * num + sizeof(uint16_t) * (3 + num)
-		 + align - 1) & ~(align - 1))
-		+ sizeof(uint16_t) * 3 + sizeof(struct vring_used_elem) * num;
+	         + align - 1) & ~(align - 1))
+	       + sizeof(uint16_t) * 3 + sizeof(struct vring_used_elem) * num;
 }
 
 /* The following is used with USED_EVENT_IDX and AVAIL_EVENT_IDX */
@@ -157,3 +159,5 @@ static inline int vring_need_event(uint16_t event_idx, uint16_t new_idx, uint16_
 	 * event indexes in virtio start at 0. */
 	return (uint16_t)(new_idx - event_idx - 1) < (uint16_t)(new_idx - old);
 }
+
+#endif /* _UAPI_LINUX_VIRTIO_RING_H */

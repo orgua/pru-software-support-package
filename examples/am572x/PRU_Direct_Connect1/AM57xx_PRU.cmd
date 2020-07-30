@@ -1,6 +1,6 @@
 /****************************************************************************/
 /*  AM57xx_PRU.cmd                                                          */
-/*  Copyright (c) 2015  Texas Instruments Incorporated                      */
+/*  Copyright (c) 2015-2018  Texas Instruments Incorporated                 */
 /*                                                                          */
 /*    Description: This file is a linker command file that can be used for  */
 /*                 linking PRU programs built with the C compiler and       */
@@ -21,9 +21,11 @@ MEMORY
 
 	PRU_DMEM_0_1	: org = 0x00000000 len = 0x00002000 CREGISTER=24 /* 8kB PRU Data RAM 0_1 */
 	PRU_DMEM_1_0	: org = 0x00002000 len = 0x00002000	CREGISTER=25 /* 8kB PRU Data RAM 1_0 */
+
+	  PAGE 2:
 	PRU_SHAREDMEM	: org = 0x00010000 len = 0x00008000 CREGISTER=28 /* 32kB Shared RAM */
 
-	DDR			    : org = 0x80000000 len = 0x00000100	CREGISTER=31
+	DDR			    : org = 0x80000000 len = 0x00010000	CREGISTER=31
 	L3OCMC			: org = 0x40000000 len = 0x00010000	CREGISTER=30
 
 
@@ -33,11 +35,11 @@ MEMORY
 	PRU_ECAP		: org = 0x00030000 len = 0x00000060	CREGISTER=3
 	PRU_IEP			: org = 0x0002E000 len = 0x0000031C	CREGISTER=26
 	PRU_INTC		: org = 0x00020000 len = 0x00001504	CREGISTER=0
-	PRU_UART		: org = 0x00028000 len = 0x00000038	CREGISTER=7	
-	
+	PRU_UART		: org = 0x00028000 len = 0x00000038	CREGISTER=7
+
 	MCASP3_DMA		: org = 0x46000000 len = 0x00000100	CREGISTER=8
 	I2C3			: org = 0x48060000 len = 0x00000300	CREGISTER=5
-	
+
 	RSVD1			: org = 0x48040000 len = 0x0000005C	CREGISTER=1
 	RSVD2			: org = 0x4802A000 len = 0x000000D8	CREGISTER=2
 	RSVD6			: org = 0x48030000 len = 0x000001A4	CREGISTER=6

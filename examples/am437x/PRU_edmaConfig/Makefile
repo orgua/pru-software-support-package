@@ -1,14 +1,25 @@
-# PRU_CGT environment variable must point to the TI PRU compiler directory. E.g.:
-#(Linux) export PRU_CGT=/home/jason/ti/ccs_v6_1_0/ccsv6/tools/compiler/ti-cgt-pru_2.1.0
-#(Windows) set PRU_CGT=C:/TI/ccs_v6_0_1/ccsv6/tools/compiler/ti-cgt-pru_2.1.0
+# PRU_CGT environment variable must point to the TI PRU code gen tools directory. E.g.:
+#(Desktop Linux) export PRU_CGT=/path/to/pru/code/gen/tools/ti-cgt-pru_2.1.2
+#(Windows) set PRU_CGT=C:/path/to/pru/code/gen/tools/ti-cgt-pru_2.1.2
+#(ARM Linux*) export PRU_CGT=/usr/share/ti/cgt-pru
+#
+# *ARM Linux also needs to create a symbolic link to the /usr/bin/ directory in
+# order to use the same Makefile
+#(ARM Linux) ln -s /usr/bin/ /usr/share/ti/cgt-pru/bin
+
 ifndef PRU_CGT
 define ERROR_BODY
 
-************************************************************
+*******************************************************************************
 PRU_CGT environment variable is not set. Examples given:
-(Linux) export PRU_CGT=/home/jason/ti/ccs_v6_1_0/ccsv6/tools/compiler/ti-cgt-pru_2.1.0
-(Windows) set PRU_CGT=C:/TI/ccs_v6_0_1/ccsv6/tools/compiler/ti-cgt-pru_2.1.0
-************************************************************
+(Desktop Linux) export PRU_CGT=/path/to/pru/code/gen/tools/ti-cgt-pru_2.1.2
+(Windows) set PRU_CGT=C:/path/to/pru/code/gen/tools/ti-cgt-pru_2.1.2
+(ARM Linux*) export PRU_CGT=/usr/share/ti/cgt-pru
+
+*ARM Linux also needs to create a symbolic link to the /usr/bin/ directory in
+order to use the same Makefile
+(ARM Linux) ln -s /usr/bin/ /usr/share/ti/cgt-pru/bin
+*******************************************************************************
 
 endef
 $(error $(ERROR_BODY))
@@ -44,6 +55,8 @@ printStart:
 
 printEnd:
 	@echo ''
+	@echo 'Output files can be found in the "$(GEN_DIR)" directory'
+	@echo ''
 	@echo 'Finished building project: $(PROJ_NAME)'
 	@echo '************************************************************'
 	@echo ''
@@ -55,8 +68,6 @@ $(TARGET): $(OBJECTS) $(LINKER_COMMAND_FILE)
 	@echo 'Invoking: PRU Linker'
 	$(PRU_CGT)/bin/clpru $(CFLAGS) -z -i$(PRU_CGT)/lib -i$(PRU_CGT)/include $(LFLAGS) -o $(TARGET) $(OBJECTS) -m$(MAP) $(LINKER_COMMAND_FILE) --library=libc.a $(LIBS)
 	@echo 'Finished building target: $@'
-	@echo ''
-	@echo 'Output files can be found in the "$(GEN_DIR)" directory'
 
 # Invokes the compiler on all c files in the directory to create the object files
 $(GEN_DIR)/%.object: %.c
