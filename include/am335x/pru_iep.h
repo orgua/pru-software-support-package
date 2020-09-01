@@ -251,6 +251,11 @@ typedef struct {
 
 } pruIep;
 
-volatile __far pruIep CT_IEP __attribute__((cregister("PRU_IEP", far), peripheral));
+#ifdef __GNUC__
+volatile pruIep *__CT_IEP = (void *)0x0002E000; // TODO: removed limiting static
+#define CT_IEP	(*__CT_IEP)
+#else
+volatile __far pruIep CT_IEP __attribute__((cregister("PRU_IEP", far), peripheral)); // TODO: could it be near? should be in range
+#endif
 
 #endif /* _PRU_IEP_H_ */
