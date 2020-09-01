@@ -67,13 +67,13 @@
 /* Return value indicating success */
 #define PRU_RPMSG_SUCCESS			0
 /* Return value indicating there were no available buffers */
-#define PRU_RPMSG_NO_BUF_AVAILABLE		-1
+#define PRU_RPMSG_NO_BUF_AVAILABLE		(-1)
 /* Return value indicating that the buffer from the virtqueue was too small */
-#define PRU_RPMSG_BUF_TOO_SMALL			-2
+#define PRU_RPMSG_BUF_TOO_SMALL			(-2)
 /* Return value indicating that an invalid head index was given */
-#define PRU_RPMSG_INVALID_HEAD			-3
+#define PRU_RPMSG_INVALID_HEAD			(-3)
 /* Return value indication that an invalid event number was given */
-#define PRU_RPMSG_INVALID_EVENT			-4
+#define PRU_RPMSG_INVALID_EVENT			(-4)
 
 /* Max PRU-ICSS system event number for pru_mst_intr */
 #define MAX_VALID_EVENT				31
@@ -221,7 +221,7 @@ int16_t pru_rpmsg_send(
     struct pru_rpmsg_transport	*transport,
     uint32_t			src,
     uint32_t			dst,
-    void			*data,
+    const void		    * data,
     uint16_t			len
 );
 
@@ -264,9 +264,9 @@ int16_t pru_rpmsg_send(
 int16_t pru_rpmsg_channel(
     enum pru_rpmsg_ns_flags	flags,
     struct pru_rpmsg_transport	*transport,
-    char			*name,
-    char			*desc,
-    int32_t			port
+    const uint8_t	    * name,
+    const uint8_t		* desc,
+    uint32_t			port
 );
 
 #endif /* _PRU_RPMSG_H_ */

@@ -54,8 +54,8 @@ struct pru_rpmsg_hdr {
 };
 
 struct pru_rpmsg_ns_msg {
-	char		name[RPMSG_NAME_SIZE];
-	char		desc[RPMSG_NAME_SIZE];
+    uint8_t		name[RPMSG_NAME_SIZE];
+    uint8_t		desc[RPMSG_NAME_SIZE];
 	uint32_t	addr;
 	uint32_t	flags;
 };
@@ -81,11 +81,11 @@ int16_t pru_rpmsg_init(
 }
 
 int16_t pru_rpmsg_send(
-    struct pru_rpmsg_transport	*transport,
-    uint32_t			src,
-    uint32_t			dst,
-    void			*data,
-    uint16_t			len
+    struct pru_rpmsg_transport	*const transport,
+    const uint32_t			src,
+    const uint32_t			dst,
+    const void			*const data,
+    const uint16_t			len
 )
 {
 	struct pru_rpmsg_hdr	*msg;
@@ -127,22 +127,19 @@ int16_t pru_rpmsg_send(
 }
 
 int16_t pru_rpmsg_receive(
-    struct pru_rpmsg_transport	*transport,
-    uint16_t			*src,
-    uint16_t			*dst,
-    void			*data,
-    uint16_t			*len
+    struct pru_rpmsg_transport	*const transport,
+    uint16_t			*const src,
+    uint16_t			*const dst,
+    void			*const data,
+    uint16_t			*const len
 )
 {
-	int16_t			head;
-	struct pru_rpmsg_hdr	*msg;
+	struct pru_rpmsg_hdr	*const msg;
 	uint32_t		msg_len;
-	struct pru_virtqueue	*virtqueue;
-
-	virtqueue = &transport->virtqueue1;
+	struct pru_virtqueue	*const virtqueue = &transport->virtqueue1;
 
 	/* Get an available buffer */
-	head = pru_virtqueue_get_avail_buf(virtqueue, (void **)&msg, &msg_len);
+    const int16_t head = pru_virtqueue_get_avail_buf(virtqueue, (void **)&msg, &msg_len);
 
 	if (head < 0)
 		return PRU_RPMSG_NO_BUF_AVAILABLE;
@@ -167,9 +164,9 @@ int16_t pru_rpmsg_receive(
 int16_t pru_rpmsg_channel(
     enum pru_rpmsg_ns_flags	flags,
     struct pru_rpmsg_transport	*transport,
-    char			*name,
-    char			*desc,
-    int32_t			port
+    const uint8_t		*const name,
+    const uint8_t		*const desc,
+    const uint32_t		port    // TODO: there was a bug here, port was int
 )
 {
 	struct pru_rpmsg_ns_msg	ns_msg;

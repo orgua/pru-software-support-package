@@ -134,7 +134,7 @@ static inline void vring_init(struct vring *vr, uint32_t num, void *p,
 {
 	vr->num = num;
 	vr->desc = p;
-	vr->avail = (void *)((char *)p + num*sizeof(struct vring_desc));
+	vr->avail = (void *)((uint8_t *)p + num*sizeof(struct vring_desc));
 	vr->used = (void *)(uintptr_t)(((uintptr_t)&vr->avail->ring[num]
 		+ sizeof(uint16_t) + align-1) & ~(align - 1));
 }
@@ -150,7 +150,7 @@ static inline unsigned vring_size(uint16_t num, uint64_t align)
 /* Assuming a given event_idx value from the other size, if
  * we have just incremented index from old to new_idx,
  * should we trigger an event? */
-static inline int vring_need_event(uint16_t event_idx, uint16_t new_idx, uint16_t old)
+static inline int32_t vring_need_event(uint16_t event_idx, uint16_t new_idx, uint16_t old)
 {
 	/* Note: Xen has similar logic for notification hold-off
 	 * in include/xen/interface/io/ring.h with req_event and req_prod

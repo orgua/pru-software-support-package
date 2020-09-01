@@ -41,7 +41,11 @@
  */
 #include <pru_virtqueue.h>
 
+#ifdef __GNUC__
+#include <pru/io.h>
+#else
 volatile register uint32_t __R31;
+#endif
 
 /* bit 5 is the valid strobe to generate system events with __R31 */
 #define INT_ENABLE	(1 << 5)
@@ -68,16 +72,12 @@ void pru_virtqueue_init(
 }
 
 int16_t pru_virtqueue_get_avail_buf(
-    struct pru_virtqueue	*vq,
+    struct pru_virtqueue	*const vq,
     void			**buf,
-    uint32_t			*len
+    uint32_t			*const len
 )
 {
-	int16_t			head;
-	struct vring_desc	desc;
-	struct vring_avail	*avail;
-
-	avail = vq->vring.avail;
+	const struct vring_avail	*const avail = vq->vring.avail;
 
 	/* There's nothing available */
 	if (vq->last_avail_idx == avail->idx)
@@ -87,9 +87,9 @@ int16_t pru_virtqueue_get_avail_buf(
 	 * Grab the next descriptor number the ARM host is advertising, and
 	 * increment the last available index we've seen.
 	 */
-	head = avail->ring[vq->last_avail_idx++ & (vq->vring.num - 1)];
+	const int16_t head = avail->ring[vq->last_avail_idx++ & (vq->vring.num - 1)];
 
-	desc = vq->vring.desc[head];
+	const struct vring_desc	desc = vq->vring.desc[head];
 	*buf = (void *)(uint32_t)desc.addr;
 	*len = desc.len;
 
@@ -97,26 +97,21 @@ int16_t pru_virtqueue_get_avail_buf(
 }
 
 int16_t pru_virtqueue_add_used_buf(
-    struct pru_virtqueue	*vq,
-    int16_t			head,
-    uint32_t			len
+    struct pru_virtqueue	*const vq,
+    const int16_t			head,
+    const uint32_t			len
 )
 {
-	struct vring_used_elem	*used_elem;
-	uint32_t		num;
-	struct vring_used	*used;
+	const uint32_t	num = vq->vring.num;
 
-	num = vq->vring.num;
-	used = vq->vring.used;
+    if (head > (int)num) return PRU_VIRTQUEUE_INVALID_HEAD;
 
-    if (head > (int)num)
-        return PRU_VIRTQUEUE_INVALID_HEAD;
-
+	struct vring_used	*const used = vq->vring.used;
 	/*
 	 * The virtqueue's vring contains a ring of used buffers.  Get a pointer to
 	 * the next entry in that used ring.
 	 */
-	used_elem = &used->ring[used->idx++ & (num - 1)];
+	struct vring_used_elem	*const used_elem = &used->ring[used->idx++ & (num - 1)];
 	used_elem->id = head;
 	used_elem->len = len;
 
@@ -124,7 +119,7 @@ int16_t pru_virtqueue_add_used_buf(
 }
 
 int16_t pru_virtqueue_kick(
-    struct pru_virtqueue	*vq
+    struct pru_virtqueue	*const vq
 )
 {
 	/* If requested, do not kick the ARM host */
@@ -132,7 +127,11 @@ int16_t pru_virtqueue_kick(
 		return PRU_VIRTQUEUE_NO_KICK;
 
 	/* Generate a system event to kick the ARM */
-	__R31 = (INT_ENABLE | (vq->to_arm_event - INT_OFFSET)); 
+#ifdef __GNUC__
+	write_r31(INT_ENABLE | (vq->to_arm_event - INT_OFFSET));
+#else
+	__R31 = (INT_ENABLE | (vq->to_arm_event - INT_OFFSET));
+#endif
 
 	return PRU_VIRTQUEUE_SUCCESS;
 }

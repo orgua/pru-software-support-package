@@ -34,10 +34,10 @@
 #define _PRU_TYPES_H_
 
 /* Custom Resource info: Must match drivers/remoteproc/pru_rproc.h */
-#define TYPE_PRU_INTS		1
+#define TYPE_PRU_INTS		1U
 
-#define PRU_INTS_VER0		(0 << 16)
-#define PRU_INTS_VER1		(1 << 16)
+#define PRU_INTS_VER0		(0U << 16U)
+#define PRU_INTS_VER1		(1U << 16U)
 
 /**
  * struct ch_map - sysevts-to-channel mapping
