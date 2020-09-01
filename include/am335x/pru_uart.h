@@ -34,6 +34,8 @@
 #ifndef _PRU_UART_H_
 #define _PRU_UART_H_
 
+#include <stdint.h>
+
 /* UART Register set */
 typedef struct {
 
@@ -280,9 +282,12 @@ typedef struct {
 
 } pruUart;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_pruUart__[1/(sizeof(pruUart) == 0x0038)];
+
 #ifdef __GNUC__
-volatile pruUart *__CT_UART = (void *)0x00028000;
-#define CT_UART	(*__CT_UART)
+volatile pruUart *CT_UART__ = (void *)0x00028000;
+#define CT_UART	(*CT_UART__)
 #else
 volatile __far pruUart CT_UART __attribute__((cregister("PRU_UART", near), peripheral));
 #endif

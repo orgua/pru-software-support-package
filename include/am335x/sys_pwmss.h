@@ -33,6 +33,7 @@
 
 #ifndef _SYS_PWMSS_H_
 #define _SYS_PWMSS_H_
+#include <stdint.h>
 
 /* SYS_PWMSS register set */
 typedef struct {
@@ -438,6 +439,18 @@ typedef struct {
 	volatile uint16_t EPWM_HRCNGF;	// 0x2C0
 
 } sysPwmss;
+
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_sysPwmss__[1/(sizeof(sysPwmss) == 0x02C4)];
+
+#ifdef __GNUC__
+static volatile sysPwmss *CT_PWMSS0__ = (void *)0x48300000;
+#define PWMSS0	(*CT_PWMSS0__)
+static volatile sysPwmss *CT_PWMSS1__ = (void *)0x48302000;
+#define PWMSS1	(*CT_PWMSS1__)
+static volatile sysPwmss *CT_PWMSS2__ = (void *)0x48304000;
+#define PWMSS2	(*CT_PWMSS2__)
+#else
 
 volatile __far sysPwmss PWMSS0 __attribute__((cregister("PWMSS0", far), peripheral));
 volatile __far sysPwmss PWMSS1 __attribute__((cregister("PWMSS1", far), peripheral));

@@ -1,5 +1,6 @@
 #ifndef _SYS_TSC_ADC_SS_H_
 #define _SYS_TSC_ADC_SS_H_
+#include <stdint.h>
 
 /* SYS TSC ADC SS register set */
 typedef struct {
@@ -955,6 +956,9 @@ typedef struct {
 	}; // 0x200
 
 } sysTscAdcSs;
+
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_sysTscAdcSs__[1/(sizeof(sysTscAdcSs) == 0x0204)];
 
 /* Definition of Touchscreen/ADC register structures. */
 #define ADC_TSC (*((volatile sysTscAdcSs*)0x44E0D000))

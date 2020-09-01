@@ -33,6 +33,7 @@
 
 #ifndef _SYS_MCSPI_H_
 #define _SYS_MCSPI_H_
+#include <stdint.h>
 
 /* SYS MCSPI register set */
 typedef struct {
@@ -503,11 +504,14 @@ typedef struct {
 
 } sysMcspi;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_sysMcspi__[1/(sizeof(sysMcspi) == 0x01A4)];
+
 #ifdef __GNUC__
-static volatile sysMcspi *__CT_MCSPI0 = (void *)0x48030000;
-static volatile sysMcspi *__CT_MCSPI1 = (void *)0x481A0000;
-#define CT_MCSPI0	(*__CT_MCSPI0)
-#define CT_MCSPI1	(*__CT_MCSPI1)
+static volatile sysMcspi *CT_MCSPI0__ = (void *)0x48030000;
+static volatile sysMcspi *CT_MCSPI1__ = (void *)0x481A0000;
+#define CT_MCSPI0	(*CT_MCSPI0__)
+#define CT_MCSPI1	(*CT_MCSPI1__)
 #else
 volatile __far sysMcspi CT_MCSPI0 __attribute__((cregister("MCSPI0", far), peripheral));
 volatile __far sysMcspi CT_MCSPI1 __attribute__((cregister("MCSPI1", far), peripheral));

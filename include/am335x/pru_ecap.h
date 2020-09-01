@@ -33,6 +33,7 @@
 
 #ifndef _PRU_ECAP_H_
 #define _PRU_ECAP_H_
+#include <stdint.h>
 
 /* PRU_ECAP register set */
 typedef struct {
@@ -123,6 +124,14 @@ typedef struct {
 	};	// 0x5C
 } pruEcap;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_pruEcap__[1/(sizeof(pruEcap) == 0x0060)];
+
+#ifdef __GNUC__
+static volatile pruEcap *CT_ECAP__ = (void *)0x00030000;
+#define CT_ECAP	(*CT_ECAP__)
+#else
 volatile __far pruEcap CT_ECAP __attribute__((cregister("PRU_ECAP", near), peripheral));
+#endif
 
 #endif /* _PRU_ECAP_H_ */

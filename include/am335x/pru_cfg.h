@@ -239,9 +239,12 @@ typedef struct {
 	};	//0x40
 } pruCfg;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_pruCfg__[1/(sizeof(pruCfg) == 0x0044)];
+
 #ifdef __GNUC__
-static volatile pruCfg *__CT_CFG = (void *)0x00026000;
-#define CT_CFG	(*__CT_CFG)
+static volatile pruCfg *CT_CFG__ = (void *)0x00026000;
+#define CT_CFG	(*CT_CFG__)
 #else
 volatile __far pruCfg CT_CFG __attribute__((cregister("PRU_CFG", near), peripheral));
 #endif

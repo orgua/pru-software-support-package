@@ -902,9 +902,12 @@ typedef struct {
 
 } pruIntc;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_pruIntc__[1/(sizeof(pruIntc) == 0x1504)];
+
 #ifdef __GNUC__
-static volatile pruIntc *__CT_INTC = (void *)0x00020000;
-#define CT_INTC	(*__CT_INTC)
+static volatile pruIntc *CT_INTC__ = (void *)0x00020000;
+#define CT_INTC	(*CT_INTC__)
 #else
 volatile __far pruIntc CT_INTC __attribute__((cregister("PRU_INTC", far), peripheral));
 #endif

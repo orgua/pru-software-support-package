@@ -33,6 +33,7 @@
 
 #ifndef _SYS_MAILBOX_H_
 #define _SYS_MAILBOX_H_
+#include <stdint.h>
 
 /* SYS_MAILBOX register set */
 typedef struct {
@@ -200,9 +201,12 @@ typedef struct {
 
 } sysMailbox;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_sysMailbox__[1/(sizeof(sysMailbox) == 0x0140)];
+
 #ifdef __GNUC__
-static volatile sysMailbox *__CT_MBX = (void *)0x480C8000;
-#define CT_MBX	(*__CT_MBX)
+static volatile sysMailbox *CT_MBX__ = (void *)0x480C8000;
+#define CT_MBX	(*CT_MBX__)
 #else
 volatile __far sysMailbox CT_MBX __attribute__((cregister("MBX0", far), peripheral));
 #endif

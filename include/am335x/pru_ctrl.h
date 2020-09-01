@@ -34,7 +34,7 @@
 #ifndef _PRU_CTRL_H_
 #define _PRU_CTRL_H_
 
-#include "stdint.h"
+#include <stdint.h>
 
 /* PRU_CTRL register set */
 typedef struct {

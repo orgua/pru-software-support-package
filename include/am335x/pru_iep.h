@@ -33,6 +33,7 @@
 
 #ifndef _PRU_IEP_H_
 #define _PRU_IEP_H_
+#include <stdint.h>
 
 /* PRU IEP register set */
 typedef struct {
@@ -251,9 +252,12 @@ typedef struct {
 
 } pruIep;
 
+// pseudo-assertion to test for correct struct-size
+extern uint32_t CHECK_STRUCT_pruIep__[1/(sizeof(pruIep) == 0x031C)];
+
 #ifdef __GNUC__
-volatile pruIep *__CT_IEP = (void *)0x0002E000; // TODO: removed limiting static
-#define CT_IEP	(*__CT_IEP)
+volatile pruIep *CT_IEP__ = (void *)0x0002E000; // TODO: removed limiting static
+#define CT_IEP	(*CT_IEP__)
 #else
 volatile __far pruIep CT_IEP __attribute__((cregister("PRU_IEP", far), peripheral)); // TODO: could it be near? should be in range
 #endif
